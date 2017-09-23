@@ -6,6 +6,7 @@ import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--log_dir',help='log dir')
+parser.add_argument('--raw_log',help='raw log file')
 parser.add_argument('--mode', default='all', help='logging mode, user or all, default: [all]')
 parser.add_argument('--cmdline',default='echo "please give a cmdline"', help='cmdline to run caffe train')
 parser.add_argument('--logging_groups', default='train,test', help='comma separated list of logging groups, default: [train,test]')
@@ -31,8 +32,10 @@ def data_to_log(logging_type, logging_tag, logging_group, regex, regex_group_id)
 
 patterns_user = [
            data_to_log('step', 'step', 0, 'Iteration (\d+)', 1),
-           data_to_log('scalar', 'acc_1', 0, 'Train net output #0: Accuracy1 = (\d+\.\d+)', 1),
-           data_to_log('scalar', 'loss_cls_1', 0, 'Train net output #1: SoftmaxWithLoss1 = (\d+\.\d+)', 1)]
+           data_to_log('scalar', 'Accuracy4', 0, 'Train net output #0: Accuracy1 = (\d+\.\d+)', 1),
+           data_to_log('scalar', 'SoftmaxWithLoss4', 0, 'Train net output #1: SoftmaxWithLoss1 = (\d+\.\d+)', 1),
+           data_to_log('scalar', 'Accuracy4', 1, 'Test net output #0: Accuracy1 = (\d+\.\d+)', 1),
+           data_to_log('scalar', 'SoftmaxWithLoss4', 1, 'Test net output #1: SoftmaxWithLoss1 = (\d+\.\d+)', 1)]
 patterns_for_all = [
            data_to_log('step', 'step', None, 'Iteration (\d+)', 1),
            data_to_log('scalar', None, 0, 'Train net output #(\d+): (\w*) = (\d+\.*\d+)', None),
@@ -80,11 +83,12 @@ def parser_all(line, patterns=patterns_for_all):
             break
     return logging_type, logging_tag, logging_group, value
 
-proc = subprocess.Popen(args.cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+#proc = subprocess.Popen(args.cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+raw_log = open(args.raw_log)
 global_step = 0
 parser = parser_user if args.mode=='user' else parser_all
 while True:
-  line = proc.stdout.readline()
+  line = raw_log.readline()
   if line != '':
     #the real code does filtering here
     print "stdout:", line.rstrip()
