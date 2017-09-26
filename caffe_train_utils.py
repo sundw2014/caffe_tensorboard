@@ -3,6 +3,7 @@ import re
 from tensorboard_logging import Logger
 import argparse
 import os
+import signal
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--log_dir',help='log dir')
@@ -80,11 +81,15 @@ def parser_all(line, patterns=patterns_for_all):
             break
     return logging_type, logging_tag, logging_group, value
 
-proc = subprocess.Popen(args.cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+proc = subprocess.Popen(args.cmdline, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, preexec_fn=os.setsid)
+
 global_step = 0
 parser = parser_user if args.mode=='user' else parser_all
 while True:
-  line = proc.stdout.readline()
+  try:
+    line = proc.stdout.readline()
+  except Exception as e:
+    os.killpg(os.getpgid(proc.pid), signal.SIGTERM)  # Send the signal to all the process groups
   if line != '':
     #the real code does filtering here
     print "stdout:", line.rstrip()

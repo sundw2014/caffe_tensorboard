@@ -32,10 +32,9 @@ def data_to_log(logging_type, logging_tag, logging_group, regex, regex_group_id)
 
 patterns_user = [
            data_to_log('step', 'step', 0, 'Iteration (\d+)', 1),
-           data_to_log('scalar', 'Accuracy4', 0, 'Train net output #0: Accuracy1 = (\d+\.\d+)', 1),
-           data_to_log('scalar', 'SoftmaxWithLoss4', 0, 'Train net output #1: SoftmaxWithLoss1 = (\d+\.\d+)', 1),
-           data_to_log('scalar', 'Accuracy4', 1, 'Test net output #0: Accuracy1 = (\d+\.\d+)', 1),
-           data_to_log('scalar', 'SoftmaxWithLoss4', 1, 'Test net output #1: SoftmaxWithLoss1 = (\d+\.\d+)', 1)]
+           data_to_log('scalar', 'SoftmaxWithLoss4', 0, 'Train net output #0: loss = (\d+\.\d+)', 1),
+           data_to_log('scalar', 'Accuracy7', 1, 'Test net output #0: accuracy = (\d+\.\d+)', 1),
+           data_to_log('scalar', 'SoftmaxWithLoss4', 1, 'Test net output #1: loss = (\d+\.\d+)', 1)]
 patterns_for_all = [
            data_to_log('step', 'step', None, 'Iteration (\d+)', 1),
            data_to_log('scalar', None, 0, 'Train net output #(\d+): (\w*) = (\d+\.*\d+)', None),
