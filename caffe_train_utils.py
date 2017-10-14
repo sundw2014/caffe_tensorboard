@@ -4,6 +4,9 @@ from tensorboard_logging import Logger
 import argparse
 import os
 import signal
+import time
+import sys
+#from __future__ import print_function
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--log_dir',help='log dir')
@@ -24,6 +27,20 @@ for logging_group in logging_groups:
     if not os.path.exists(logging_group): os.mkdir(logging_group)
     loggers.append(Logger(logging_group))
 
+logging_raw = LOG_DIR+'/log_raw'
+if not os.path.exists(logging_raw): os.mkdir(logging_raw)
+logging_raw = logging_raw+'/'+str(time.time())
+logging_raw = open(logging_raw, 'w')
+logging_raw.write('caffe_tensorboard cmdline:\n')
+logging_raw.write(str(sys.argv))
+logging_raw.write('\n')
+logging_raw.write('cmdline:\n')
+logging_raw.write(args.cmdline)
+logging_raw.write('\n')
+
+logging_bkp = LOG_DIR+'/bkp'
+if not os.path.exists(logging_bkp): os.mkdir(logging_bkp)
+os.system('cp *.prototxt %s' % (logging_bkp)) # bkp of model def
 
 dev_null = open('/dev/null','w')
 
@@ -32,8 +49,23 @@ def data_to_log(logging_type, logging_tag, logging_group, regex, regex_group_id)
 
 patterns_user = [
            data_to_log('step', 'step', 0, 'Iteration (\d+)', 1),
-           data_to_log('scalar', 'acc_1', 0, 'Train net output #0: Accuracy1 = (\d+\.\d+)', 1),
-           data_to_log('scalar', 'loss_cls_1', 0, 'Train net output #1: SoftmaxWithLoss1 = (\d+\.\d+)', 1)]
+           data_to_log('scalar', 'Accuracy5', 0, 'Train net output #(\d+): Accuracy1 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy6', 0, 'Train net output #(\d+): Accuracy2 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'SoftmaxWithLoss3', 0, 'Train net output #(\d+): SoftmaxWithLoss1 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy7', 0, 'Train net output #(\d+): Accuracy3 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy8', 0, 'Train net output #(\d+): Accuracy4 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'SoftmaxWithLoss4', 0, 'Train net output #(\d+): SoftmaxWithLoss2 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'KLLoss', 0, 'Train net output #(\d+): KLLoss1 = (\d+\.\d+)', 2),
+
+           data_to_log('scalar', 'Accuracy5', 1, 'Test net output #(\d+): Accuracy1 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy6', 1, 'Test net output #(\d+): Accuracy2 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'SoftmaxWithLoss3', 1, 'Test net output #(\d+): SoftmaxWithLoss1 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy7', 1, 'Test net output #(\d+): Accuracy3 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy8', 1, 'Test net output #(\d+): Accuracy4 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'SoftmaxWithLoss4', 1, 'Test net output #(\d+): SoftmaxWithLoss2 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'KLLoss', 1, 'Test net output #(\d+): KLLoss1 = (\d+\.\d+)', 2)
+           ]
+
 patterns_for_all = [
            data_to_log('step', 'step', None, 'Iteration (\d+)', 1),
            data_to_log('scalar', None, 0, 'Train net output #(\d+): (\w*) = (\d+\.*\d+)', None),
@@ -92,7 +124,8 @@ while True:
     os.killpg(os.getpgid(proc.pid), signal.SIGTERM)  # Send the signal to all the process groups
   if line != '':
     #the real code does filtering here
-    print "stdout:", line.rstrip()
+    #print "stdout:", line.rstrip()
+    logging_raw.write(line)
     logging_type, logging_tag, logging_group, value = parser(line.rstrip())
     if value is None:
         pass
