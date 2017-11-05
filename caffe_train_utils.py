@@ -68,8 +68,8 @@ patterns_user = [
 
 patterns_for_all = [
            data_to_log('step', 'step', None, 'Iteration (\d+)', 1),
-           data_to_log('scalar', None, 0, 'Train net output #(\d+): (\w*) = (\d+\.*\d+)', None),
-           data_to_log('scalar', None, 1, 'Test net output #(\d+): (\w*) = (\d+\.*\d+)', None)]
+           data_to_log('scalar', None, 0, 'Train net output #(\d+): (\w*/*\w*-*\w*) = (\d+\.*\d*)', None),
+           data_to_log('scalar', None, 1, 'Test net output #(\d+): (\w*/*\w*-*\w*) = (\d+\.*\d*)', None)]
 # cmd = '$PROOT/caffe/build/tools/caffe train -gpu 6 -solver solver.prototxt'
 
 def parser_user(line, patterns=patterns_user):

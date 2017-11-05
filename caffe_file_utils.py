@@ -32,9 +32,23 @@ def data_to_log(logging_type, logging_tag, logging_group, regex, regex_group_id)
 
 patterns_user = [
            data_to_log('step', 'step', 0, 'Iteration (\d+)', 1),
-           data_to_log('scalar', 'SoftmaxWithLoss4', 0, 'Train net output #0: loss = (\d+\.\d+)', 1),
-           data_to_log('scalar', 'Accuracy7', 1, 'Test net output #0: accuracy = (\d+\.\d+)', 1),
-           data_to_log('scalar', 'SoftmaxWithLoss4', 1, 'Test net output #1: loss = (\d+\.\d+)', 1)]
+           data_to_log('scalar', 'Accuracy5', 0, 'Train net output #(\d+): Accuracy1 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy6', 0, 'Train net output #(\d+): Accuracy2 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'SoftmaxWithLoss3', 0, 'Train net output #(\d+): SoftmaxWithLoss1 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy7', 0, 'Train net output #(\d+): Accuracy3 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy8', 0, 'Train net output #(\d+): Accuracy4 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'SoftmaxWithLoss4', 0, 'Train net output #(\d+): SoftmaxWithLoss2 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'KLLoss', 0, 'Train net output #(\d+): KLLoss1 = (\d+\.\d+)', 2),
+
+           data_to_log('scalar', 'Accuracy5', 1, 'Test net output #(\d+): Accuracy1 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy6', 1, 'Test net output #(\d+): Accuracy2 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'SoftmaxWithLoss3', 1, 'Test net output #(\d+): SoftmaxWithLoss1 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy7', 1, 'Test net output #(\d+): Accuracy3 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'Accuracy8', 1, 'Test net output #(\d+): Accuracy4 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'SoftmaxWithLoss4', 1, 'Test net output #(\d+): SoftmaxWithLoss2 = (\d+\.\d+)', 2),
+           data_to_log('scalar', 'KLLoss', 1, 'Test net output #(\d+): KLLoss1 = (\d+\.\d+)', 2)
+           ]
+
 patterns_for_all = [
            data_to_log('step', 'step', None, 'Iteration (\d+)', 1),
            data_to_log('scalar', None, 0, 'Train net output #(\d+): (\w*) = (\d+\.*\d+)', None),
