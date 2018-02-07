@@ -2,7 +2,10 @@
 __author__ = "Michael Gygli"
 
 import tensorflow as tf
-from StringIO import StringIO
+try:
+    from io import StringIO
+except ImportError:
+    import StringIO
 import matplotlib.pyplot as plt
 import numpy as np
 
